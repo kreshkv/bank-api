@@ -27,8 +27,9 @@ Add Account to existing Customer
              "CustomerId": 2
         }
        
-To View Account Details. 
-  GET: http://localhost:5000/api/v1/customer/account/100001
+ To View Account Details. 
+  GET: localhost:5000/api/v1/customer/account/100001.
+    
           Response: 
           [
               {
@@ -41,8 +42,9 @@ To View Account Details.
               }
           ]
 
-To View all the Account of the customer
-  GET: http://localhost:5000/api/v1/customer/1
+To View all the Account of the customer.
+  GET: localhost:5000/api/v1/customer/1.
+  
           Response: 
           [
               {
@@ -56,7 +58,8 @@ To View all the Account of the customer
           ]
 
 Amount Transfer
-  POST http://localhost:5000/api/v1/customer/transfer
+  POST localhost:5000/api/v1/customer/transfer.
+  
         Payload :{
             "AccountNo":100003,
             "AccountTo":100004,
