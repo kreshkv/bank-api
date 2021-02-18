@@ -1,8 +1,8 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response } from "express";
 import { AppRoute } from "../app-route";
-import { Customer } from "../entities";
 import { Api } from "../helpers";
 import { CustomerManager } from "../manager/customer.manager";
+import * as joi from "joi";
 
 export class CustomerController implements AppRoute {
   public route = "/customer";
@@ -15,6 +15,19 @@ export class CustomerController implements AppRoute {
   }
 
   private addCustomer(request: Request, response: Response) {
+    const schema = joi
+      .object()
+      .keys({
+        Name: joi.string().min(3),
+        Address: joi.string().required(),
+        Mobile: joi.string().min(10),
+        Amount: joi.number().min(5000),
+      })
+      .validate(request.body).error;
+
+    if (schema) {
+      return Api.badRequest(request, response, schema.details);
+    }
     const newCustomer = new CustomerManager().addCustomer(request.body);
     return Api.created(request, response, newCustomer);
   }

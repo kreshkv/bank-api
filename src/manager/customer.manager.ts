@@ -5,6 +5,7 @@ import {
   TransferFrom,
 } from "../entities/Transaction";
 import { TransactionManager } from "./transaction.manager";
+import { Api } from "../helpers";
 export class CustomerManager {
   private customers: Customer[] = [];
   private transactionManager: TransactionManager;
@@ -16,6 +17,13 @@ export class CustomerManager {
       this.customers = globalThis.customers;
     }
   }
+  /**
+   * To add a new customer
+   *
+   * @param {Customer} customer
+   * @return {*}  {Customer}
+   * @memberof CustomerManager
+   */
   public addCustomer(customer: Customer): Customer {
     if (this.customers.length === 0) {
       customer.AccountNo = 100001;
@@ -23,8 +31,7 @@ export class CustomerManager {
     } else {
       const length = this.customers.length;
       customer.AccountNo = this.customers[length - 1].AccountNo + 1;
-      customer.CustomerId =
-        customer.CustomerId ?? this.customers[length - 1].CustomerId + 1;
+
       const transaction: Transaction = {
         Id: 0,
         Amount: customer.Amount,
@@ -39,15 +46,33 @@ export class CustomerManager {
     this.customers.push(customer);
     return customer;
   }
-
+  /**
+   * Get the Account balance and details using AccountNo.
+   *
+   * @param {*} accountNo
+   * @return {*}
+   * @memberof CustomerManager
+   */
   public getAccountBalance(accountNo) {
     return this.customers.filter((tran) => tran.AccountNo === +accountNo);
   }
-
+  /**
+   *Get all the Account Details mapped by the customer No.
+   *
+   * @param {*} customerId
+   * @return {*}
+   * @memberof CustomerManager
+   */
   public getAllAccountBalance(customerId) {
     return this.customers.filter((tran) => tran.CustomerId === +customerId);
   }
-
+  /**
+   *Transfer the amount to another bank/same bank.
+   *
+   * @param {Transaction} transaction
+   * @return {*}
+   * @memberof CustomerManager
+   */
   public transfer(transaction: Transaction) {
     const fromCustomer = this.customers.find(
       (cust) => cust.AccountNo === transaction.AccountNo
@@ -66,15 +91,15 @@ export class CustomerManager {
       if (!toCustomer) {
         return "Invalid Reference Account";
       }
-
-      fromCustomer.Amount -= transaction.Amount;
-      transaction.Transaction = "Debit";
-
       this.transactionManager.addTransaction(transaction);
       transaction.Transaction = "Credit";
       toCustomer.Amount += transaction.Amount;
       transaction.AccountNo = transaction.AccountTo;
       this.transactionManager.addTransaction(transaction);
+    } else {
+      fromCustomer.Amount -= transaction.Amount;
+      transaction.Transaction = "Debit";
+      /* Call the external API/Job for the Transaction*/
     }
     return "OK";
   }
