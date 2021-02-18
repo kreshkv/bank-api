@@ -75,6 +75,20 @@ Amount Transfer
 
 I haved used the globalThis for storing the Customer and Transaction Details.
 
+Added Joi validation for the add customer.
+
+The Authentication and Authorization not handled. 
+
+To Run 
+
+  npm run start
+  
+Testing
+  Mocha chai
+  Run 
+    npm run test.
+
+
 
 
 
